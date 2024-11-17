@@ -8,13 +8,15 @@ echo "Enter your username:"
 read USERNAME
 
 USER_EXISTS=$($PSQL "SELECT username FROM users WHERE username='$USERNAME'")
+GAMES_PLAYED=$($PSQL "SELECT COUNT(*) FROM users INNER JOIN games USING(user_id) WHERE username='$USERNAME'")
+BEST_GAME=$($PSQL "SELECT MIN(guesses) FROM users INNER JOIN games USING(user_id) WHERE username='$USERNAME'")
 
 if [[ -z $USER_EXISTS]]
 then
   INSERT_USER=$($PSQL "INSERT INTO users(username) VALUES('$USERNAME')")
   echo "Welcome, $USER_EXISTS! It looks like this is your first time here."
 else 
-  echo "Welcome back, $USER_EXISTS! You have played <games_played> games, and your best game took <best_game> guesses."
+  echo "Welcome back, $USER_EXISTS! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 fi
 
 SECRET_NUMBER=$((1 + $RANDOM % 1000))
@@ -49,3 +51,5 @@ if [[ $ATTEMPTS == 1 ]]
   else
     echo "You guessed it in $ATTEMPTS tries. The secret number was $SECRET_NUMBER. Nice job!"
 fi
+
+
