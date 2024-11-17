@@ -52,4 +52,5 @@ if [[ $ATTEMPTS == 1 ]]
     echo "You guessed it in $ATTEMPTS tries. The secret number was $SECRET_NUMBER. Nice job!"
 fi
 
-
+USER_ID=$($PSQL "SELECT user_id FROM users WHERE username='$USERNAME'")
+INSERT_GAME=$($PSQL "INSERT INTO games(guesses, user_id) VALUES($ATTEMPTS, $USER_ID)")
